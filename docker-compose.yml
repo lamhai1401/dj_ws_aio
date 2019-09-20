@@ -1,18 +1,10 @@
 version: '3.3'
 
 services:
-  redis:
-    build: ./redis
-    container_name: redis_server
-    command: echo never > /sys/kernel/mm/transparent_hugepage/enabled
-    ports: 
-      - "6379:6379"
       
   web:
     build: .
     command:  bash -c "chmod +x ./run.sh && /run.sh"
-    depends_on: 
-      - redis
     container_name: dj_aio_ws
     volumes:
       - .:/dj_aio_ws
@@ -29,5 +21,14 @@ services:
       - "81:81"
     volumes:
       - ./static:/var/www/static
+
+  redis:
+    build: ./redis
+    # command: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+    container_name: redis_server
+    depends_on: 
+      - web
+    ports:
+      - "6379:6379"
 
 # docker-compose down -v --rmi all --remove-orphans (remove all docker compose)
