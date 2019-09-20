@@ -1,13 +1,11 @@
 FROM ubuntu:latest
+EXPOSE 6379
 
 RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 RUN ln -s /usr/share/zoneinfo/Etc/GMT+7 /etc/localtime
 
 ENV LANG en_US.utf8
-
-RUN apt-get update
-RUN apt-get install docker-ce docker-ce-cli containerd.io
 
 FROM python:3.7
 # The enviroment variable ensures that the python output is set straight
@@ -21,7 +19,18 @@ RUN apt update \
     libxext6 \
     libfontconfig1 \
     libxrender1 \
-    python3-tk
+    python3-tk redis-server
+
+RUN pip3 install --upgrade pip
+
+RUN git clone https://github.com/lamhai1401/dj_ws_aio
+
+WORKDIR /dj_ws_aio
+COPY . /usr/local/src/dj_ws_aio
+WORKDIR /usr/local/src/dj_ws_aio
+ENV PYTHONPATH /usr/local/src/dj_ws_aio
+
+RUN pip3 install -r requirements.txt
 
 # Run the gunicorn
-RUN gunicorn --workers=3 --threads=3 --worker-connections=1000 websockets.core.app:app --bind 0.0.0.0:8000 --worker-class aiohttp.worker.GunicornWebWorker
+ENTRYPOINT ["/bin/bash", "run.sh"]

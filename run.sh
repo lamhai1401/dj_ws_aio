@@ -1,0 +1,1 @@
+gunicorn --workers=3 --threads=3 --worker-connections=1000 websockets.core.app:app --bind 0.0.0.0:8000 --worker-class aiohttp.worker.GunicornWebWorker
