@@ -4,7 +4,7 @@ async-timeout==3.0.1
 asyncio==3.4.3
 attrs==19.1.0
 chardet==3.0.4
-Django==2.2.5
+Django==2.2.18
 django-cors-headers==3.1.0
 djangorestframework==3.10.3
 gunicorn==19.9.0
